@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {
@@ -28,7 +28,6 @@ export default function BookingDashboard() {
 
   const itemsPerPage = 5;
   const [startDate, endDate] = dateRange;
-  const API_URL = "http://localhost:4000/api/bookings";
   const token = localStorage.getItem("token");
 
   // Detect dark mode
@@ -48,8 +47,7 @@ export default function BookingDashboard() {
   useEffect(() => {
     const fetchBookings = async () => {
       try {
-        const res = await axios.get(API_URL, {
-          headers: { Authorization: `Bearer ${token}` },
+        const res = await axiosInstance.get("/bookings", {
           params: { t: Date.now() },
         });
         if (res.data && res.data.success) setBookings(res.data.bookings);
@@ -132,10 +130,9 @@ export default function BookingDashboard() {
 
   const saveEdit = async (id) => {
     try {
-      const res = await axios.put(
-        `${API_URL}/${id}`,
-        { status: editedData.status },
-        { headers: { Authorization: `Bearer ${token}` } }
+      const res = await axiosInstance.put(
+        `/bookings/${id}`,
+        { status: editedData.status }
       );
       const updatedBooking = res.data.booking;
       if (updatedBooking) {
@@ -149,7 +146,7 @@ export default function BookingDashboard() {
 
   const deleteBooking = async (id) => {
     try {
-      await axios.delete(`${API_URL}/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+      await axiosInstance.delete(`/bookings/${id}`);
       setBookings((prev) => prev.filter((b) => b._id !== id));
     } catch (err) {
       console.error("❌ Error deleting booking:", err);

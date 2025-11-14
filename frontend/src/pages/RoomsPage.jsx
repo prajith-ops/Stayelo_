@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 import { useLocation, useNavigate } from "react-router-dom";
 import {
   StarIcon,
@@ -22,7 +22,7 @@ export default function RoomPage() {
       const fetchRooms = async () => {
         try {
           setLoading(true);
-          const res = await axios.get("http://localhost:4000/api/rooms/public");
+          const res = await axiosInstance.get("/rooms/public");
           setRooms(res.data);
         } catch (err) {
           console.error("Error fetching rooms:", err);

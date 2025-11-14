@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
@@ -40,8 +40,8 @@ const Hero = () => {
       if (priceMin) params.priceMin = priceMin;
       if (priceMax) params.priceMax = priceMax;
 
-      const response = await axios.get(
-        "http://localhost:4000/api/rooms/search",
+      const response = await axiosInstance.get(
+        "/rooms/search",
         { params }
       );
 
@@ -77,110 +77,119 @@ const Hero = () => {
       </p>
 
       <form
-        onSubmit={handleSearch}
-        className="bg-white text-gray-700 rounded-lg px-6 py-4 flex flex-col md:flex-row max-md:items-start gap-4 max-md:mx-auto w-max shadow-lg "
-      >
-        {/* Destination */}
-        <div>
-          <label className="font-medium">Destination</label>
-          <input
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-            type="text"
-            placeholder="Enter city"
-            className="rounded border border-gray-300 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-            required
-          />
-        </div>
+  onSubmit={handleSearch}
+  className="
+    bg-white text-gray-700 dark:bg-gray-900 dark:text-gray-100
+    rounded-lg px-6 py-4
+    flex flex-col md:flex-row md:flex-wrap
+    gap-4
+    w-full max-w-7xl
+    shadow-lg
+  "
+>
+  {/* Destination */}
+  <div className="flex flex-col w-full md:w-[180px]">
+    <label className="font-medium">Destination</label>
+    <input
+      value={destination}
+      onChange={(e) => setDestination(e.target.value)}
+      type="text"
+      placeholder="Enter city"
+      className="rounded border border-gray-300 dark:border-gray-700 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+      required
+    />
+  </div>
 
-        {/* Check-in */}
-        <div>
-          <label className="font-medium">Check in</label>
-          <input
-            type="date"
-            value={checkIn}
-            onChange={(e) => setCheckIn(e.target.value)}
-            className="rounded border border-gray-300 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-          />
-        </div>
+  {/* Check-in */}
+  <div className="flex flex-col w-full md:w-[150px]">
+    <label className="font-medium">Check in</label>
+    <input
+      type="date"
+      value={checkIn}
+      onChange={(e) => setCheckIn(e.target.value)}
+      className="rounded border border-gray-300 dark:border-gray-700 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+    />
+  </div>
 
-        {/* Check-out */}
-        <div>
-          <label className="font-medium">Check out</label>
-          <input
-            type="date"
-            value={checkOut}
-            onChange={(e) => setCheckOut(e.target.value)}
-            className="rounded border border-gray-300 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-          />
-        </div>
+  {/* Check-out */}
+  <div className="flex flex-col w-full md:w-[150px]">
+    <label className="font-medium">Check out</label>
+    <input
+      type="date"
+      value={checkOut}
+      onChange={(e) => setCheckOut(e.target.value)}
+      className="rounded border border-gray-300 dark:border-gray-700 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+    />
+  </div>
 
-        {/* Guests */}
-        <div>
-          <label className="font-medium">Guests</label>
-          <input
-            type="number"
-            min={1}
-            max={10}
-            value={guests}
-            onChange={(e) => setGuests(Number(e.target.value))}
-            className="rounded border border-gray-300 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400 w-20"
-            required
-          />
-        </div>
+  {/* Guests */}
+  <div className="flex flex-col w-full md:w-[100px]">
+    <label className="font-medium">Guests</label>
+    <input
+      type="number"
+      min={1}
+      max={10}
+      value={guests}
+      onChange={(e) => setGuests(Number(e.target.value))}
+      className="rounded border border-gray-300 dark:border-gray-700 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+      required
+    />
+  </div>
 
-        {/* Room Type */}
-        <div>
-          <label className="font-medium">Room Type</label>
-          <select
-            value={roomType}
-            onChange={(e) => setRoomType(e.target.value)}
-            className="rounded border border-gray-300 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
-          >
-            <option value="">Select Type</option>
-            <option value="Single">Single</option>
-            <option value="Double">Double</option>
-            <option value="Deluxe">Deluxe</option>
-          </select>
-        </div>
+  {/* Room Type */}
+  <div className="flex flex-col w-full md:w-[150px]">
+    <label className="font-medium">Room Type</label>
+    <select
+      value={roomType}
+      onChange={(e) => setRoomType(e.target.value)}
+      className="rounded border border-gray-300 dark:border-gray-700 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400 bg-white dark:bg-gray-800"
+    >
+      <option value="">Select Type</option>
+      <option value="Single">Single</option>
+      <option value="Double">Double</option>
+      <option value="Deluxe">Deluxe</option>
+    </select>
+  </div>
 
-        {/* Price Range */}
-        <div>
-          <label className="font-medium">Price Min</label>
-          <input
-            type="number"
-            min={0}
-            value={priceMin}
-            onChange={(e) => setPriceMin(e.target.value)}
-            className="rounded border border-gray-300 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400 w-24"
-            placeholder="₹0"
-          />
-        </div>
+  {/* Price Min */}
+  <div className="flex flex-col w-full md:w-[120px]">
+    <label className="font-medium">Price Min</label>
+    <input
+      type="number"
+      min={0}
+      value={priceMin}
+      onChange={(e) => setPriceMin(e.target.value)}
+      className="rounded border border-gray-300 dark:border-gray-700 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+      placeholder="₹0"
+    />
+  </div>
 
-        <div>
-          <label className="font-medium">Price Max</label>
-          <input
-            type="number"
-            min={0}
-            value={priceMax}
-            onChange={(e) => setPriceMax(e.target.value)}
-            className="rounded border border-gray-300 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400 w-24"
-            placeholder="₹5000"
-          />
-        </div>
+  {/* Price Max */}
+  <div className="flex flex-col w-full md:w-[120px]">
+    <label className="font-medium">Price Max</label>
+    <input
+      type="number"
+      min={0}
+      value={priceMax}
+      onChange={(e) => setPriceMax(e.target.value)}
+      className="rounded border border-gray-300 dark:border-gray-700 px-3 py-2 mt-1.5 text-sm outline-none focus:ring-2 focus:ring-indigo-400"
+      placeholder="₹5000"
+    />
+  </div>
 
-        {/* Search Button */}
-        <button
-          type="submit"
-           className="mt-3 md:mt-0 w-fit px-6 py-2 text-white font-semibold rounded-lg
-                     bg-gradient-to-r from-cyan-500 to-indigo-600
-                     dark:from-violet-500 dark:to-fuchsia-600
-                     shadow-md hover:opacity-90 hover:scale-[1.02] transition-all float-right flex items-center gap-2"
-          disabled={loading}
-        >
-          {loading ? "Searching..." : "Search"}
-        </button>
-      </form>
+  {/* Search Button */}
+  <button
+    type="submit"
+    className="md:ml-auto mt-3 md:mt-0 w-full md:w-fit px-6 py-2 text-white font-semibold rounded-lg
+               bg-gradient-to-r from-cyan-500 to-indigo-600
+               dark:from-violet-500 dark:to-fuchsia-600
+               shadow-md hover:opacity-90 hover:scale-[1.02] transition-all flex items-center gap-2"
+    disabled={loading}
+  >
+    {loading ? "Searching..." : "Search"}
+  </button>
+</form>
+
     </div>
   );
 };

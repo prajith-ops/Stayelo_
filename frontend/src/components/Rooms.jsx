@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 import { Edit, Trash2, Plus, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -26,9 +26,7 @@ const Rooms = () => {
     const fetchRooms = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:4000/api/rooms", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axiosInstance.get("/rooms");
         setRooms(res.data);
       } catch (err) {
         console.error("Error fetching rooms:", err.response?.data || err.message);
@@ -66,23 +64,21 @@ const Rooms = () => {
       let res;
 
       if (editingRoom) {
-        res = await axios.put(
-          `http://localhost:4000/api/rooms/${editingRoom._id}`,
+        res = await axiosInstance.put(
+          `/rooms/${editingRoom._id}`,
           formData,
           {
             headers: {
               "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${token}`,
             },
           }
         );
         const updated = res.data.room || res.data;
         setRooms((prev) => prev.map((r) => (r._id === editingRoom._id ? updated : r)));
       } else {
-        res = await axios.post("http://localhost:4000/api/rooms", formData, {
+        res = await axiosInstance.post("/rooms", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${token}`,
           },
         });
         const addedRoom = res.data.room || res.data;
@@ -113,9 +109,7 @@ const Rooms = () => {
   const handleDeleteRoom = async (roomId) => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:4000/api/rooms/${roomId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.delete(`/rooms/${roomId}`);
       setRooms((prev) => prev.filter((r) => r._id !== roomId));
       setConfirmDelete(null);
     } catch (err) {

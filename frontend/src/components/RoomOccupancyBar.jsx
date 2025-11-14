@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 import { Moon, Sun, Loader2 } from "lucide-react";
 
 const RoomOccupancyBar = () => {
@@ -26,9 +26,7 @@ const RoomOccupancyBar = () => {
         console.log("Fetching rooms from backend with token...", token);
 
         // Fetch all rooms (admin route)
-        const res = await axios.get("http://localhost:4000/api/rooms", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axiosInstance.get("/rooms");
 
         console.log("Raw response: ", res);
         const rooms = res.data || [];

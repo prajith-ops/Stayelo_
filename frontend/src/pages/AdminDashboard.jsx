@@ -10,7 +10,7 @@ import RoomOccupancyBar from "../components/RoomOccupancyBar";
 import DatePicker from "react-datepicker";
 import { motion } from "framer-motion";
 import "react-datepicker/dist/react-datepicker.css";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 import jsPDF from "jspdf";
 import { io } from "socket.io-client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -58,12 +58,8 @@ const AdminDashboard = () => {
       const token = localStorage.getItem("token");
 
       const [bookingsRes, roomsRes] = await Promise.all([
-        axios.get("http://localhost:4000/api/bookings", {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        axios.get("http://localhost:4000/api/rooms", {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
+        axiosInstance.get("/bookings"),
+        axiosInstance.get("/rooms"),
       ]);
 
       const bookings = bookingsRes.data?.bookings || [];

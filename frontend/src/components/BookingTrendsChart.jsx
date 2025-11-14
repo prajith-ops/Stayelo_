@@ -11,7 +11,7 @@ import {
   ReferenceDot,
 } from "recharts";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 
 const BookingTrendsChart = () => {
   const [range, setRange] = useState("1Y");
@@ -23,7 +23,7 @@ const BookingTrendsChart = () => {
   useEffect(() => {
     const fetchTrends = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/bookings/trends");
+        const res = await axiosInstance.get("/bookings/trends");
         setData(res.data || []);
       } catch (error) {
         console.error("Error fetching booking trends:", error);

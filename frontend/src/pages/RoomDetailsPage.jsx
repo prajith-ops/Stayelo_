@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 import {
   CalendarIcon,
   UserIcon,
@@ -38,7 +38,7 @@ export default function RoomDetailsPage() {
     if (!room) {
       const fetchRoom = async () => {
         try {
-          const res = await axios.get(`http://localhost:4000/api/rooms/${id}`);
+          const res = await axiosInstance.get(`/rooms/${id}`);
           const roomData = res.data.room || res.data;
 
           roomData.reviews = roomData.reviews?.length

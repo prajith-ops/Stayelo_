@@ -4,7 +4,7 @@ import { CardTitle, CardDescription } from "./ui/Card";
 import Input from "./ui/Input";
 import { Button } from "./ui/Button";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const Login = ({ open, onClose, onLogin }) => {
@@ -89,8 +89,8 @@ const Login = ({ open, onClose, onLogin }) => {
   // Handle Google login
   const handleGoogleCallbackResponse = async (response) => {
     try {
-      const res = await axios.post(
-        "http://localhost:4000/api/auth/google-login",
+      const res = await axiosInstance.post(
+        "/auth/google-login",
         { token: response.credential }
       );
       const { token, user } = res.data;
@@ -108,8 +108,8 @@ const Login = ({ open, onClose, onLogin }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:4000/api/auth/login",
+      const res = await axiosInstance.post(
+        "/auth/login",
         loginForm
       );
       const { token, user } = res.data;
@@ -131,7 +131,7 @@ const Login = ({ open, onClose, onLogin }) => {
     if (!signupForm.name || !signupForm.email || !signupForm.password)
       return alert("Please fill all required fields");
     try {
-      await axios.post("http://localhost:4000/api/auth/signup", {
+      await axiosInstance.post("/auth/signup", {
         ...signupForm,
         role: "CUSTOMER",
       });
@@ -149,8 +149,8 @@ const Login = ({ open, onClose, onLogin }) => {
     setLoading(true);
     setForgotStatus(null);
     try {
-      const res = await axios.post(
-        "http://localhost:4000/api/auth/forgot-password",
+      const res = await axiosInstance.post(
+        "/auth/forgot-password",
         { email: forgotEmail }
       );
       alert(res.data.message || "OTP sent to your email.");
@@ -446,8 +446,8 @@ const ForgotOtpStep = ({ email, onClose }) => {
     if (!otp || !newPassword) return alert("Please fill all fields");
     try {
       setLoading(true);
-      const res = await axios.post(
-        "http://localhost:4000/api/auth/reset-password",
+      const res = await axiosInstance.post(
+        "/auth/reset-password",
         { email, otp, newPassword }
       );
       alert(res.data.message || "✅ Password reset successful!");

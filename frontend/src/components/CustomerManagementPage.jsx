@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { IoArrowDownCircleOutline } from "react-icons/io5";
 import { MdBlock, MdOutlineDelete } from "react-icons/md";
 import { CgUnblock } from "react-icons/cg";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 
 const CustomerManagementPage = () => {
   const [customers, setCustomers] = useState([]);
@@ -30,9 +30,7 @@ const CustomerManagementPage = () => {
     const fetchCustomers = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get("http://localhost:4000/api/auth/customers", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axiosInstance.get("/auth/customers");
         setCustomers(res.data);
       } catch (err) {
         console.error("Error fetching customers:", err);
@@ -59,10 +57,9 @@ const CustomerManagementPage = () => {
       const token = localStorage.getItem("token");
       const updatedStatus = status === "Active" ? "Inactive" : "Active";
 
-      await axios.put(
-        `http://localhost:4000/api/auth/customers/${id}`,
-        { status: updatedStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
+      await axiosInstance.put(
+        `/auth/customers/${id}`,
+        { status: updatedStatus }
       );
 
       setCustomers((prev) =>
@@ -79,9 +76,7 @@ const CustomerManagementPage = () => {
     if (!window.confirm("Are you sure you want to delete this customer?")) return;
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`http://localhost:4000/api/auth/customers/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axiosInstance.delete(`/auth/customers/${id}`);
       setCustomers((prev) => prev.filter((c) => c._id !== id));
       setOpenDropdownId(null);
     } catch (err) {

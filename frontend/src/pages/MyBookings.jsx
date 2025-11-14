@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom"; // ✅ Import navigation hook
+import axiosInstance from "../utils/axiosInterceptor";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 
 const MyBookingsPage = () => {
@@ -25,9 +25,8 @@ const MyBookingsPage = () => {
         const payload = JSON.parse(atob(token.split(".")[1]));
         const userId = payload.id;
 
-        const res = await axios.get(
-          `http://localhost:4000/api/bookings/user/${userId}`,
-          { headers: { Authorization: `Bearer ${token}` } }
+        const res = await axiosInstance.get(
+          `/bookings/user/${userId}`
         );
 
         setBookings(res.data.bookings || []);
@@ -47,10 +46,9 @@ const MyBookingsPage = () => {
 
     try {
       const token = localStorage.getItem("token");
-      await axios.put(
-        `http://localhost:4000/api/bookings/${bookingId}/cancel`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
+      await axiosInstance.put(
+        `/bookings/${bookingId}/cancel`,
+        {}
       );
 
       setBookings((prev) =>

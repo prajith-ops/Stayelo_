@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import axiosInstance from "../utils/axiosInterceptor";
 import { Loader2, CheckCircle } from "lucide-react";
 
 export default function Payment() {
@@ -51,10 +51,9 @@ export default function Payment() {
 
     try {
       // ✅ Step 1: Create Razorpay order (amount in paise)
-      const { data } = await axios.post(
-        "http://localhost:4000/api/payment/create-order",
-        { amount: totalAmount },
-        { headers: { Authorization: `Bearer ${token}` } }
+      const { data } = await axiosInstance.post(
+        "/payment/create-order",
+        { amount: totalAmount }
       );
 
       const { order } = data;
@@ -75,8 +74,8 @@ export default function Payment() {
         handler: async function (response) {
           try {
             // ✅ Step 3: Verify payment
-            const verifyRes = await axios.post(
-              "http://localhost:4000/api/bookings/verify-payment",
+            const verifyRes = await axiosInstance.post(
+              "/bookings/verify-payment",
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,

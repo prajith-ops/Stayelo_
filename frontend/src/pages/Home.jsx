@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 import Hero from "../components/Hero";
 import {
   Card,
@@ -69,11 +69,8 @@ const Home = () => {
 
     try {
       setLoadingRecommendations(true);
-      const response = await axios.get(
-        "http://localhost:4000/api/recommendations",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+      const response = await axiosInstance.get(
+        "/recommendations"
       );
 
       setRecommendedRooms(response.data.recommendations || []);
@@ -124,7 +121,7 @@ const Home = () => {
 useEffect(() => {
   const fetchRooms = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/api/rooms/public");
+      const res = await axiosInstance.get("/rooms/public");
       setRooms(res.data);
     } catch (err) {
       console.log("Error fetching featured rooms:", err);

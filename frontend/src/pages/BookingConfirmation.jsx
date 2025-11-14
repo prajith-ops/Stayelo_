@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import { QRCodeCanvas } from "qrcode.react";
 import jsPDF from "jspdf";
@@ -20,9 +20,7 @@ export default function BookingConfirmation() {
       if (!bookingId) return;
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`http://localhost:4000/api/bookings/${bookingId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axiosInstance.get(`/bookings/${bookingId}`);
 
         setBooking(res.data.booking);
         setRoom(res.data.booking?.room || null);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Edit, Save, X, Phone, MapPin, LogOut, Camera } from "lucide-react";
-import axios from "axios";
+import axiosInstance from "../utils/axiosInterceptor";
 
 const Profile = ({ open, onClose, onProfileUpdate }) => {
   const [flipped, setFlipped] = useState(false);
@@ -35,9 +35,7 @@ const Profile = ({ open, onClose, onProfileUpdate }) => {
       }
 
       try {
-        const res = await axios.get("http://localhost:4000/api/auth/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axiosInstance.get("/auth/profile");
         const userData = res.data;
         setUser(userData);
         setFormData(userData);
@@ -74,12 +72,11 @@ const Profile = ({ open, onClose, onProfileUpdate }) => {
       data.append("location", formData.location || "");
       if (picFile) data.append("profilePic", picFile);
 
-      const res = await axios.put(
-        "http://localhost:4000/api/auth/update-profile",
+      const res = await axiosInstance.put(
+        "/auth/update-profile",
         data,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
           },
         }
